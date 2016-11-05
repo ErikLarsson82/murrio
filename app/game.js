@@ -48,7 +48,7 @@ define('app/game', [
       this.velocity = config.velocity || {x: 0, y: 0}
     }
     tick() {
-      
+
     }
     draw(renderingContext) {
       renderingContext.fillStyle = this.color;
@@ -61,8 +61,7 @@ define('app/game', [
 
   class Murrio extends GameObject {
     constructor(config) {
-      super(config)
-      this.jumpAvailable = 2;
+      super(config);
       this.jumpButtonReleased = true;
       this.touchingGround = false;
     }
@@ -109,9 +108,9 @@ define('app/game', [
       super.tick();
     }
     jump() {
-      if (this.jumpAvailable === 0 || !this.jumpButtonReleased) return;
+      if (!this.touchingGround || !this.jumpButtonReleased) return;
       this.velocity.y = -6;
-      this.jumpAvailable--;
+      this.touchingGround = false;
       this.jumpButtonReleased = false;
     }
     draw(renderingContext) {
@@ -241,22 +240,20 @@ define('app/game', [
   }
 
   function handleMove(gameObject, newPos, callbackX, callbackY) {
-    var originalX = gameObject.pos.x;
     gameObject.pos.x = newPos.x;
     var collisions = detectCollision(gameObject);
     if (collisions.length > 0) {
       _.each(collisions, function(collision) { resolveCollision(gameObject, collision) });
-      gameObject.pos.x = originalX;
+      gameObject.pos.x = collisions[0].pos.x - TILE_SIZE;
       callbackX();
     }
 
-    var originalY = gameObject.pos.y;
     gameObject.pos.y = newPos.y;
     var collisions = detectCollision(gameObject);
     if (collisions.length > 0) {
       _.each(collisions, function(collision) { resolveCollision(gameObject, collision) });
-      gameObject.pos.y = originalY;
-      callbackY();
+      gameObject.pos.y = collisions[0].pos.y - TILE_SIZE;
+      callbackY(collisions);
     }
   }
 
@@ -322,7 +319,7 @@ define('app/game', [
     canvasHeight = 768
 
     gameOver = false
-    
+
     gameObjects = []
 
     loadMap(map);
@@ -346,7 +343,7 @@ define('app/game', [
     draw: function (renderingContext) {
       renderingContext.fillStyle = "white";
       renderingContext.fillRect(0,0, canvasWidth, canvasHeight)
-      
+
       renderingContext.save();
       renderingContext.translate(-scroller.getScreenOffset(), 0);
       _.each(gameObjects, function (gameObject) {
