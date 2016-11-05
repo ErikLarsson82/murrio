@@ -197,7 +197,7 @@ define('app/game', [
     draw(renderingContext) {
       if (this.done) {
         renderingContext.drawImage(images.grandpa_happy, this.pos.x, this.pos.y)
-        renderingContext.drawImage(images.pratbubblathanks, 100, 100);
+        renderingContext.drawImage(images.pratbubblathanks, this.pos.x - 205, this.pos.y - 210);
       } else {
         renderingContext.drawImage(images.grandpa, this.pos.x, this.pos.y)
       }
@@ -233,18 +233,18 @@ define('app/game', [
     }
     tick() {
       if (!this.done) {
-        if (Math.random() > 0.6) {
+        if (Math.random() > 0.0001) {
           var particleSettings = {
             pos: {
-              x: victoryTile.pos.x + (Math.random() * TILE_SIZE * 0.8),
-              y: victoryTile.pos.y,
+              x: victoryTile.pos.x + (Math.random() * TILE_SIZE / 2) + TILE_SIZE / 4,
+              y: victoryTile.pos.y - 4,
             },
             velocity: {
-              x: (Math.random() - 0.5) * 1.2,
-              y: -(Math.random()) * 5,
+              x: (Math.random() - 0.5) * 1.5,
+              y: -1 - (Math.random()) * 8,
             },
             image: images.lavaparticle,
-            lifetime: 60
+            lifetime: 90,
           }
           var particle = new Particle(particleSettings);
           gameObjects.push(particle);
