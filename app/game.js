@@ -188,7 +188,7 @@ define('app/game', [
   class Tile extends GameObject {
     constructor(config) {
       super(config);
-      this.image = config.image;
+      this.image = images.tile;
     }
   }
 
@@ -255,6 +255,8 @@ define('app/game', [
         x: this.pos.x + this.velocity.x,
         y: this.pos.y + this.velocity.y
       }
+      this.velocity.x = this.velocity.x * 0.98;
+      this.velocity.y = this.velocity.y * 0.98;
       this.pos = nextPosition;
 
       this.lifetime--;
@@ -264,6 +266,18 @@ define('app/game', [
       renderingContext.globalAlpha = (this.lifetime / this.lifetimeMax);
       super.draw(renderingContext);
       renderingContext.globalAlpha = 1;
+    }
+  }
+
+  class PressAnyKey extends GameObject {
+    constructor(config) {
+      super(config);
+    }
+    tick() {
+
+    }
+    draw(renderingContext) {
+
     }
   }
 
@@ -314,11 +328,11 @@ define('app/game', [
             y: murrio.pos.y + TILE_SIZE - (Math.random() * 2),
           },
           velocity: {
-            x: (Math.random() - 0.5),
-            y: (Math.random() - 0.5),
+            x: (Math.random() - 0.5) * 1.2,
+            y: -(Math.random() - 0.3) * 3,
           },
           image: images.lavaparticle,
-          lifetime: 40
+          lifetime: 60
         }
         var particle = new Particle(particleSettings);
         gameObjects.push(particle);
@@ -382,8 +396,7 @@ define('app/game', [
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
-              },
-              image: images.tile
+              }
             })
             gameObjects.push(tile)
           break;
@@ -402,16 +415,6 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               }
-            })
-            gameObjects.push(tile)
-          break;
-          case 6:
-            var tile = new Tile({
-              pos: {
-                x: colIdx * TILE_SIZE,
-                y: rowIdx * TILE_SIZE
-              },
-              image: images.tile3
             })
             gameObjects.push(tile)
           break;

@@ -39,6 +39,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var lavaparticle = new Image();
   lavaparticle.src = "./assets/images/lavaparticle.png";
 
+  var pressanykey = new Image();
+  pressanykey.src = "./assets/images/pressanykey.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -49,6 +52,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     won: won,
     dead: dead,
     sky: sky,
-    lavaparticle: lavaparticle
+    lavaparticle: lavaparticle,
+    pressanykey: pressanykey
   }
 })
