@@ -42,6 +42,8 @@ define('app/game', [
 
   class GameObject {
     constructor(config) {
+      this.markedForRemoval = false;
+      this.color = config.color || "black"
       this.pos = config.pos;
       this.velocity = config.velocity || {x: 0, y: 0}
     }
@@ -49,10 +51,12 @@ define('app/game', [
       
     }
     draw(renderingContext) {
-      renderingContext.fillStyle = "black";
+      renderingContext.fillStyle = this.color;
       renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
     }
-    
+    destroy() {
+      this.markedForRemoval = true;
+    }
   }
 
   class Murrio extends GameObject {
@@ -91,7 +95,6 @@ define('app/game', [
         x: this.pos.x + this.velocity.x,
         y: this.pos.y + this.velocity.y
       }
-      //this.pos = nextPosition;
       var callbackX = function() {
         this.velocity.x = 0;
       }
@@ -111,12 +114,57 @@ define('app/game', [
       this.jumpAvailable--;
       this.jumpButtonReleased = false;
     }
+    draw(renderingContext) {
+      var color = (this.touchingGround) ? this.color : "purple"
+      renderingContext.fillStyle = color;
+      renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
+    }
+  }
+
+  class MurrioDeathAnimation extends GameObject {
+    constructor(config) {
+      super(config)
+      this.color = "yellow";
+    }
+    tick() {
+      this.pos.y -= 1;
+    }
   }
 
   class Tile extends GameObject {
     constructor(config) {
       super(config)
     }
+  }
+
+  class DeathTile extends GameObject {
+    constructor(config) {
+      super(config)
+      this.color = "red"
+    }
+  }
+
+  class VictoryTile extends GameObject {
+    constructor(config) {
+      super(config)
+      this.color = "blue"
+    }
+  }
+
+  class GameRestarter {
+    constructor() {
+      this.pos = {
+        x: 999,
+        y: 999
+      }
+    }
+    tick() {
+      const pad = userInput.getInput(0)
+      if (pad.buttons[0].pressed) {
+        init();
+      }
+    }
+    draw() {}
   }
 
   class ScreenScroller {
@@ -175,9 +223,21 @@ define('app/game', [
 
   function resolveCollision(gameObject, other) {
     if (isOfTypes(gameObject, other, Murrio, Tile)) {
-      console.log('kollide with tile');
+      //console.log('kollide with tile');
     }
-    
+    if (isOfTypes(gameObject, other, Murrio, DeathTile)) {
+      var murrio = getOfType(gameObject, other, Murrio);
+      murrio.destroy();
+      gameObjects.push(new GameRestarter());
+      gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
+
+    }
+    if (isOfTypes(gameObject, other, Murrio, VictoryTile)) {
+      var murrio = getOfType(gameObject, other, Murrio);
+      murrio.destroy();
+      gameObjects.push(new GameRestarter());
+      gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
+    }
   }
 
   function handleMove(gameObject, newPos, callbackX, callbackY) {
@@ -185,6 +245,7 @@ define('app/game', [
     gameObject.pos.x = newPos.x;
     var collisions = detectCollision(gameObject);
     if (collisions.length > 0) {
+      _.each(collisions, function(collision) { resolveCollision(gameObject, collision) });
       gameObject.pos.x = originalX;
       callbackX();
     }
@@ -193,6 +254,7 @@ define('app/game', [
     gameObject.pos.y = newPos.y;
     var collisions = detectCollision(gameObject);
     if (collisions.length > 0) {
+      _.each(collisions, function(collision) { resolveCollision(gameObject, collision) });
       gameObject.pos.y = originalY;
       callbackY();
     }
@@ -221,6 +283,24 @@ define('app/game', [
             })
             gameObjects.push(tile)
           break;
+          case 3:
+            var tile = new DeathTile({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              }
+            })
+            gameObjects.push(tile)
+          break;
+          case 5:
+            var tile = new VictoryTile({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              }
+            })
+            gameObjects.push(tile)
+          break;
         }
       })
     })
@@ -237,19 +317,21 @@ define('app/game', [
     return false;
   }
 
+  function init() {
+    canvasWidth = 1024
+    canvasHeight = 768
+
+    gameOver = false
+    
+    gameObjects = []
+
+    loadMap(map);
+
+    scroller = new ScreenScroller();
+  }
+
   return {
-    init: function() {
-      canvasWidth = 1024
-      canvasHeight = 768
-
-      gameOver = false
-      
-      gameObjects = []
-
-      loadMap(map);
-
-      scroller = new ScreenScroller();
-    },
+    init: init,
     tick: function() {
       endConditions();
       _.each(gameObjects, function (gameObject) {
@@ -271,6 +353,11 @@ define('app/game', [
         gameObject.draw(renderingContext)
       })
       renderingContext.restore();
+
+      if (!playerAlive()) {
+        renderingContext.fillStyle = "red";
+        renderingContext.fillRect(100, 100, 10, 10)
+      }
     }
   }
 })
