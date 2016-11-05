@@ -378,7 +378,7 @@ define('app/game', [
       playSound('gameMusic', true)
       playSound('gameOverMusic')
 
-      if (death.particle) {
+      if (death.particles) {
         _.each(new Array(20), function() {
           var particleSettings = {
             pos: {
