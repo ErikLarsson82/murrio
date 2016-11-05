@@ -27,6 +27,7 @@ define('app/game', [
   const DEBUG_WRITE_BUTTONS = false;
   const DEBUG_DISABLE_GRAPHICS = false;
   const DEBUG_DRAW_BOXES = false;
+  const DEBUG_HOTKEYS = false;
   let DEBUG_START_OFFSET = 0;
 
   const TILE_SIZE = 48;
@@ -714,6 +715,7 @@ define('app/game', [
   }
 
   window.addEventListener("keydown", function(e) {
+    if (!DEBUG_HOTKEYS) return;
     if (e.keyCode === 83) { // s
       scroller.screenOffset = scroller.screenOffset + 1000;
       murrio.pos.x = murrio.pos.x + 1000;
