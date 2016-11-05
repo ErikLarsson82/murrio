@@ -115,6 +115,18 @@ define('app/game', [
     }
   }
 
+  class ScreenScroller {
+    constructor() {
+      this.screenOffset = 0;
+    }
+    tick() {
+      this.screenOffset += 1;
+    }
+    getScreenOffset() {
+      return this.screenOffset;
+    }
+  }
+
   function isOfTypes(gameObject, other, type1, type2) {
     return (gameObject instanceof type1 && other instanceof type2) ||
         (gameObject instanceof type2 && other instanceof type1)
@@ -219,13 +231,15 @@ define('app/game', [
       gameObjects = []
 
       loadMap(map);
+
+      scroller = new ScreenScroller();
     },
     tick: function() {
-
       endConditions();
       _.each(gameObjects, function (gameObject) {
         gameObject.tick();
       });
+      scroller.tick();
 
       gameObjects = gameObjects.filter(function (gameObject) {
         return !gameObject.markedForRemoval
@@ -234,10 +248,13 @@ define('app/game', [
     draw: function (renderingContext) {
       renderingContext.fillStyle = "white";
       renderingContext.fillRect(0,0, canvasWidth, canvasHeight)
-          
+      
+      renderingContext.save();
+      renderingContext.translate(-scroller.getScreenOffset(), 0);
       _.each(gameObjects, function (gameObject) {
         gameObject.draw(renderingContext)
       })
+      renderingContext.restore();
     }
   }
 })
