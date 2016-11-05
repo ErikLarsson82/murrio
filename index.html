@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>Murrio</title>
+<script data-main="app/gameContainer" src="lib/require.js"></script>
+<link rel="icon" href="favicon.png" type="image/png" sizes="16x16">
+<link href="http://fonts.googleapis.com/css?family=Chelsea+Market" rel="stylesheet" type="text/css">
+<style>
+body, div {
+    padding: 0px;
+    margin: 0px;
+    background-color: white;
+    font-family: Arial;
+    font-family: 'Chelsea Market', cursive;
+}
+.container {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    right: 0;
+    margin:auto;
+    width: 1024px;
+}
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border: 2px solid black;
+}
+.text {
+    margin: 20px;
+}
+h1 {
+    color: "black";
+}
+h2 {
+    color: "black";
+}
+p {
+    color: "black";
+}
+.instructions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <canvas id="canvas" width="1024" height="768"></canvas>
+    <div class="text">
+        <h1>Instructions:</h1>
+        <div class="instructions">
+            <div>
+                <h2>Keyboard:</h2>
+                <p>Left/Right - Steer</p>
+                <p>Up - Thrusters</p>
+                <p>Z or Space - Fire</p>
+                <p>R - Restart</p>
+            </div>
+            <div>
+                <h2>Controller (PS4):</h2>
+                <p>D-pad - Steer</p>
+                <p>R1 / X - Thrusters</p>
+                <p>L1 / Square - Fire</p>
+                <p>Options - Restart</p>
+            </div>
+            <div>
+                <h2>Controller (Xbox):</h2>
+                <p>D-pad - Steer</p>
+                <p>RB / A - Thrusters</p>
+                <p>LB / X - Fire</p>
+                <p>Start - Restart</p>
+            </div>
+        </div>
+        <h2>Created by:</h2>
+        <p>Fredrik Järnbröst - Design, Graphics, Music, Sound, Programming</p>
+        <p>Erik Larsson - Design, Music, Programming</p>
+    </div>
+</div>
+</body>
+</html>
