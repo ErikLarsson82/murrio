@@ -172,6 +172,17 @@ define('app/game', [
     }
   }
 
+  class MurrioWin extends GameObject {
+    constructor(config) {
+      super(config)
+      this.color = "yellow";
+      this.image = images.won;
+    }
+    tick() {
+
+    }
+  }
+
   class Tile extends GameObject {
     constructor(config) {
       super(config);
@@ -283,7 +294,7 @@ define('app/game', [
       var murrio = getOfType(gameObject, other, Murrio);
       murrio.destroy();
       gameObjects.push(new GameRestarter());
-      gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
+      gameObjects.push(new MurrioWin({ pos: murrio.pos }));
     }
   }
 
