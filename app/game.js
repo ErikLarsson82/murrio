@@ -79,7 +79,7 @@ define('app/game', [
         x: 0,
         y: 0
       }
-      var speed = (this.touchingGround) ? 0.2 : 0.08;
+      var speed = (this.touchingGround) ? 0.6 : 0.08;
       if (pad.buttons[14].pressed) { // left
         acceleration.x -= speed;
       }
@@ -94,7 +94,7 @@ define('app/game', [
         this.jumpButtonReleased = true;
       }
 
-      var groundFriction = (this.touchingGround) ? 0.98 : 1;
+      var groundFriction = (this.touchingGround) ? 0.90 : 1;
       this.velocity = {
         x: (this.velocity.x + acceleration.x) * groundFriction,
         y: this.velocity.y + acceleration.y + GRAVITY
@@ -107,7 +107,7 @@ define('app/game', [
       //Collision with edge of map
       if (nextPosition.x <= scroller.getScreenOffset() + 10) {
         nextPosition.x = scroller.getScreenOffset() + 10;
-        this.velocity.x = 1;
+        this.velocity.x = 0;
       }
 
       var callbackX = function() {
@@ -128,7 +128,7 @@ define('app/game', [
     }
     jump() {
       if (!this.touchingGround || !this.jumpButtonReleased) return;
-      this.velocity.y = -10;
+      this.velocity.y = -10 - Math.abs(this.velocity.x / 2);
       this.touchingGround = false;
       this.jumpButtonReleased = false;
     }
