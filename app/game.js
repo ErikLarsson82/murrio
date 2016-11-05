@@ -27,6 +27,7 @@ define('app/game', [
   const DEBUG_WRITE_BUTTONS = !false;
   const DEBUG_DISABLE_GRAPHICS = false;
   const DEBUG_DRAW_BOXES = true;
+  let DEBUG_START_OFFSET = 0;
 
   const TILE_SIZE = 48;
   const GRAVITY = 0.3;
@@ -210,13 +211,13 @@ define('app/game', [
 
   class ScreenScroller {
     constructor() {
-      this.screenOffset = 0;
+      this.screenOffset = DEBUG_START_OFFSET || 0;
       this.momentum = 0;
     }
     tick() {
       var treshold_one = Math.round(canvasWidth * 0.4);
-      var treshold_two = Math.round(canvasWidth * 0.6);
-      var treshold_three = Math.round(canvasWidth * 0.8);
+      var treshold_two = Math.round(canvasWidth * 0.5);
+      var treshold_three = Math.round(canvasWidth * 0.7);
       if (murrio.pos.x - this.screenOffset > treshold_one) this.screenOffset += 1;
       if (murrio.pos.x - this.screenOffset > treshold_two) this.screenOffset += 2;
       if (murrio.pos.x - this.screenOffset > treshold_three) {
@@ -312,10 +313,11 @@ define('app/game', [
       _.each(row, function(column, colIdx) {
         switch(column) {
           case 1:
+            var verticalOffset = (DEBUG_START_OFFSET > 0) ? 50 : rowIdx * TILE_SIZE;
             murrio = new Murrio({
               pos: {
-                x: colIdx * TILE_SIZE,
-                y: rowIdx * TILE_SIZE
+                x: colIdx * TILE_SIZE + DEBUG_START_OFFSET,
+                y: verticalOffset
               }
             })
             gameObjects.push(murrio)
@@ -375,6 +377,13 @@ define('app/game', [
 
     scroller = new ScreenScroller();
   }
+
+  window.addEventListener("keydown", function(e) {
+    if (e.keyCode === 83) { // s
+      DEBUG_START_OFFSET = DEBUG_START_OFFSET + 1000;
+      init();
+    }
+  })
 
   return {
     init: init,
