@@ -193,7 +193,8 @@ define('app/game', [
   class DeathTile extends GameObject {
     constructor(config) {
       super(config)
-      this.color = "red"
+      this.color = "red";
+      this.image = images.lava;
     }
   }
 
@@ -418,8 +419,7 @@ define('app/game', [
       });
     },
     draw: function (renderingContext) {
-      renderingContext.fillStyle = "#A9EEFF";
-      renderingContext.fillRect(0,0, canvasWidth, canvasHeight)
+      renderingContext.drawImage(images.sky,0,0)
 
       renderingContext.save();
       renderingContext.translate(-scroller.getScreenOffset(), 0);
