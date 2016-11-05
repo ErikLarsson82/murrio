@@ -33,6 +33,7 @@ define('app/game', [
   const GRAVITY = 0.3;
 
   let gameObjects;
+  let playSound;
   let murrio;
 
   function debugWriteButtons(pad) {
@@ -128,6 +129,7 @@ define('app/game', [
     }
     jump() {
       if (!this.touchingGround || !this.jumpButtonReleased) return;
+      playSound('jump')
       var jumpSpeed = -9.45 - Math.abs(this.velocity.x / 2);
       this.velocity.y = Math.max(-11, jumpSpeed);
       this.touchingGround = false;
@@ -276,13 +278,16 @@ define('app/game', [
       murrio.destroy();
       gameObjects.push(new GameRestarter());
       gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
-
+      playSound('gameMusic', true)
+      playSound('gameOverMusic')
     }
     if (isOfTypes(gameObject, other, Murrio, VictoryTile)) {
       var murrio = getOfType(gameObject, other, Murrio);
       murrio.destroy();
       gameObjects.push(new GameRestarter());
       gameObjects.push(new MurrioWin({ pos: murrio.pos }));
+      playSound('gameMusic', true)
+      playSound('victoryMusic')
     }
   }
 
@@ -372,15 +377,20 @@ define('app/game', [
     return false;
   }
 
-  function init() {
+  function init(_playSound) {
     canvasWidth = 1024
     canvasHeight = 768
 
     gameOver = false
+    playSound = _playSound || playSound
 
     gameObjects = []
 
-    loadMap(map.getMap(0));
+    loadMap(map.getMap(99));
+
+    playSound('gameMusic', false, true)
+    playSound('victoryMusic', true, true)
+    playSound('gameOverMusic', true, true)
 
     scroller = new ScreenScroller();
   }
@@ -419,6 +429,11 @@ define('app/game', [
         renderingContext.fillStyle = "red";
         renderingContext.fillRect(100, 100, 10, 10)
       }
+    },
+    destroy: function() {
+      playSound('victoryMusic', true)
+      playSound('gameOverMusic', true)
+      playSound('gameMusic', true)
     }
   }
 })
