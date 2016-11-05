@@ -267,7 +267,7 @@ define('app/game', [
       this.spritesheet.tick(1000/60);
       this.amountUntilKeyPressAvailable--;
 
-      if (this.amountUntilKeyPressAvailable > 0) return;
+      if (this.amountUntilKeyPressAvailable > TIME_UNTIL_RESTART - 90) return;
 
       const pad = userInput.getInput(0)
       if (pad.buttons[0].pressed || pad.buttons[14].pressed || pad.buttons[15].pressed) {
