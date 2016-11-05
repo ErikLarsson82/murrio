@@ -86,7 +86,7 @@ define('app/game', [
         x: 0,
         y: 0
       }
-      var speed = (this.touchingGround) ? 0.6 : 0.08;
+      var speed = (this.touchingGround) ? 0.6 : 0.14;
       if (pad.buttons[14].pressed) { // left
         acceleration.x -= speed;
       }
