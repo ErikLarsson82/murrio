@@ -424,7 +424,7 @@ define('app/game', [
       gameObjects.push(new GameRestarter());
       gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
       playSound('gameMusic', true)
-      playSound('gameOverMusic')
+      playSound('gameOverMusic', false, false)
 
       if (death.particles) {
         _.each(new Array(20), function() {
@@ -453,7 +453,7 @@ define('app/game', [
       gameObjects.push(gr);
       gameObjects.push(new MurrioWin({ pos: murrio.pos }));
       playSound('gameMusic', true)
-      playSound('victoryMusic')
+      playSound('victoryMusic', false, false)
       grandpa.done = true;
       victoryTile.done = true;
     }
