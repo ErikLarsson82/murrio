@@ -270,11 +270,17 @@ define('app/game', [
   }
 
   function handleMove(gameObject, newPos, callbackX, callbackY) {
+    var fromLeft = newPos.x > gameObject.pos.x;
+    var fromTop = newPos.y > gameObject.pos.y;
     gameObject.pos.x = newPos.x;
     var collisions = detectCollision(gameObject);
     if (collisions.length > 0) {
       _.each(collisions, function(collision) { resolveCollision(gameObject, collision) });
-      gameObject.pos.x = collisions[0].pos.x - TILE_SIZE;
+      if (fromLeft) {
+        gameObject.pos.x = collisions[0].pos.x - TILE_SIZE;
+      } else {
+        gameObject.pos.x = collisions[0].pos.x + TILE_SIZE;
+      }
       callbackX();
     }
 
@@ -282,7 +288,12 @@ define('app/game', [
     var collisions = detectCollision(gameObject);
     if (collisions.length > 0) {
       _.each(collisions, function(collision) { resolveCollision(gameObject, collision) });
-      gameObject.pos.y = collisions[0].pos.y - TILE_SIZE;
+      if (fromTop) {
+        gameObject.pos.y = collisions[0].pos.y - TILE_SIZE;
+      } else {
+        gameObject.pos.y = collisions[0].pos.y + TILE_SIZE;
+      }
+      //gameObject.pos.y = collisions[0].pos.y - TILE_SIZE;
       callbackY(collisions);
     }
   }
