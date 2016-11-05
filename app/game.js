@@ -634,7 +634,7 @@ define('app/game', [
           break;
           case 'D':
             var spike = new Spike({
-              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
+              sprite: SpriteSheet.new(images.spike, images.spike_blueprint),
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
@@ -649,7 +649,7 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               },
-              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
+              sprite: SpriteSheet.new(images.spike, images.spike_blueprint),
               totalWalkDistance: 48 * 3
             })
             gameObjects.push(spike)
@@ -660,7 +660,7 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               },
-              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
+              sprite: SpriteSheet.new(images.spike, images.spike_blueprint),
               totalWalkDistance: 48 * 7
             })
             gameObjects.push(spike)

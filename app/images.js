@@ -50,6 +50,19 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     autoPlay: true,
   }
 
+  var spike = new Image();
+  spike.src = "./assets/images/spikmurr_animation.png";
+
+  var spike_blueprint = {
+    frames: [200, 200],
+    x: 0,
+    y: 0,
+    width: 48,
+    height: 48,
+    restart: true,
+    autoPlay: true,
+  }
+
   var pipe = new Image();
   pipe.src = "./assets/images/pipe.png";
 
@@ -115,5 +128,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     youdidit: youdidit,
     lava_blueprint: lava_blueprint,
     egg: egg,
+    spike: spike,
+    spike_blueprint: spike_blueprint,
   }
 })
