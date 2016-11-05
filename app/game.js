@@ -231,20 +231,8 @@ define('app/game', [
       this.momentum = 0;
     }
     tick() {
-      var treshold_one = Math.round(canvasWidth * 0.4);
-      var treshold_two = Math.round(canvasWidth * 0.5);
-      var treshold_three = Math.round(canvasWidth * 0.8);
-      if (murrio.pos.x - this.screenOffset > treshold_one) this.screenOffset += 1;
-      if (murrio.pos.x - this.screenOffset > treshold_two) this.screenOffset += 3;
-      if (murrio.pos.x - this.screenOffset > treshold_three) {
-        this.momentum = 40;
-      }
-      if (this.momentum > 0) {
-        this.screenOffset += this.momentum;
-        this.momentum -= 1;
-      }
-      if (!playerAlive()) {
-        this.momentum = 0;
+      if (murrio.pos.x > canvasWidth / 2 + this.screenOffset) {
+        this.screenOffset = murrio.pos.x - canvasWidth / 2;
       }
     }
     getScreenOffset() {
