@@ -94,7 +94,7 @@ define('app/game', [
         this.jumpButtonReleased = true;
       }
 
-      var groundFriction = (this.touchingGround) ? 0.90 : 1;
+      var groundFriction = (this.touchingGround) ? 0.92 : 0.985;
       this.velocity = {
         x: (this.velocity.x + acceleration.x) * groundFriction,
         y: this.velocity.y + acceleration.y + GRAVITY
@@ -128,13 +128,12 @@ define('app/game', [
     }
     jump() {
       if (!this.touchingGround || !this.jumpButtonReleased) return;
-      this.velocity.y = -10 - Math.abs(this.velocity.x / 2);
+      var jumpSpeed = -9.4 - Math.abs(this.velocity.x / 2);
+      this.velocity.y = Math.max(-11, jumpSpeed);
       this.touchingGround = false;
       this.jumpButtonReleased = false;
     }
     draw(renderingContext) {
-      //super.draw(renderingContext);
-
       if (Math.abs(this.velocity.x) > 1 && this.touchingGround) {
         renderingContext.save()
         renderingContext.translate(this.pos.x, this.pos.y);
