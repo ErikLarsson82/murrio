@@ -704,8 +704,7 @@ define('app/game', [
 
     gameObjects = []
 
-    // loadMap(map.getMap()[currentMapIdx]);
-    loadMap(map.getMap()[1]);
+    loadMap(map.getMap()[currentMapIdx]);
 
     playSound('gameMusic', false, true)
     playSound('victoryMusic', true, true)
