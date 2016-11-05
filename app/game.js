@@ -95,10 +95,17 @@ define('app/game', [
         x: (this.velocity.x + acceleration.x) * groundFriction,
         y: this.velocity.y + acceleration.y + GRAVITY
       }
-      const nextPosition = {
+      let nextPosition = {
         x: this.pos.x + this.velocity.x,
         y: this.pos.y + this.velocity.y
       }
+
+      //Collision with edge of map
+      if (nextPosition.x <= scroller.getScreenOffset() + 10) {
+        nextPosition.x = scroller.getScreenOffset() + 10;
+        this.velocity.x = 1;
+      }
+
       var callbackX = function() {
         this.velocity.x = 0;
       }
@@ -112,7 +119,7 @@ define('app/game', [
 
       this.walk_animation.tick(Math.round(1000/60 * Math.abs(this.velocity.x)));
 
-      this.direction = (this.velocity.x >= 0);
+      this.direction = (this.velocity.x > 0);
       super.tick();
     }
     jump() {
