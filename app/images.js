@@ -21,10 +21,18 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var tile = new Image();
   tile.src = "./assets/images/tile.png";
 
+  var won = new Image();
+  won.src = "./assets/images/won.png";
+
+  var dead = new Image();
+  dead.src = "./assets/images/dead.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
     jump: jump,
-    tile: tile
+    tile: tile,
+    won: won,
+    dead: dead
   }
 })

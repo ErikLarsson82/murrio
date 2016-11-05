@@ -26,7 +26,7 @@ define('app/game', [
 
   const DEBUG_WRITE_BUTTONS = !false;
   const DEBUG_DISABLE_GRAPHICS = false;
-  const DEBUG_DRAW_BOXES = true;
+  const DEBUG_DRAW_BOXES = false;
   let DEBUG_START_OFFSET = 0;
 
   const TILE_SIZE = 48;
@@ -53,9 +53,12 @@ define('app/game', [
 
     }
     draw(renderingContext) {
-      if (!DEBUG_DRAW_BOXES) return;
-      renderingContext.fillStyle = this.color;
-      renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
+      if (!this.image || DEBUG_DRAW_BOXES) {
+        renderingContext.fillStyle = this.color;
+        renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
+      } else {
+        renderingContext.drawImage(this.image, this.pos.x, this.pos.y)
+      }
     }
     destroy() {
       this.markedForRemoval = true;
@@ -130,7 +133,7 @@ define('app/game', [
       this.jumpButtonReleased = false;
     }
     draw(renderingContext) {
-      super.draw(renderingContext);
+      //super.draw(renderingContext);
 
       if (Math.abs(this.velocity.x) > 1 && this.touchingGround) {
         renderingContext.save()
@@ -162,6 +165,7 @@ define('app/game', [
     constructor(config) {
       super(config)
       this.color = "yellow";
+      this.image = images.dead;
     }
     tick() {
       this.pos.y -= 1;
@@ -170,7 +174,8 @@ define('app/game', [
 
   class Tile extends GameObject {
     constructor(config) {
-      super(config)
+      super(config);
+      this.image = images.tile;
     }
   }
 
@@ -217,15 +222,18 @@ define('app/game', [
     tick() {
       var treshold_one = Math.round(canvasWidth * 0.4);
       var treshold_two = Math.round(canvasWidth * 0.5);
-      var treshold_three = Math.round(canvasWidth * 0.7);
+      var treshold_three = Math.round(canvasWidth * 0.8);
       if (murrio.pos.x - this.screenOffset > treshold_one) this.screenOffset += 1;
-      if (murrio.pos.x - this.screenOffset > treshold_two) this.screenOffset += 2;
+      if (murrio.pos.x - this.screenOffset > treshold_two) this.screenOffset += 3;
       if (murrio.pos.x - this.screenOffset > treshold_three) {
         this.momentum = 40;
       }
       if (this.momentum > 0) {
         this.screenOffset += this.momentum;
         this.momentum -= 1;
+      }
+      if (!playerAlive()) {
+        this.momentum = 0;
       }
     }
     getScreenOffset() {
@@ -399,7 +407,7 @@ define('app/game', [
       });
     },
     draw: function (renderingContext) {
-      renderingContext.fillStyle = "white";
+      renderingContext.fillStyle = "#A9EEFF";
       renderingContext.fillRect(0,0, canvasWidth, canvasHeight)
 
       renderingContext.save();
