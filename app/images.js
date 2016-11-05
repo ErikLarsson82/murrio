@@ -37,8 +37,18 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var tile3 = new Image();
   tile3.src = "./assets/images/tile3.png";
 
-  var lava = new Image();
-  lava.src = "./assets/images/lava.png";
+  var lava_sprite = new Image();
+  lava_sprite.src = "./assets/images/lava.png";
+
+  var lava = SpriteSheet.new(lava_sprite, {
+    frames: [200, 200],
+    x: 0,
+    y: 0,
+    width: 48,
+    height: 48,
+    restart: true,
+    autoPlay: true,
+  });
 
   var pipe = new Image();
   pipe.src = "./assets/images/pipe.png";

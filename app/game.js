@@ -185,9 +185,6 @@ define('app/game', [
       this.color = "yellow";
       this.image = images.won;
     }
-    tick() {
-
-    }
   }
 
   class Grandpa extends GameObject {
@@ -216,6 +213,42 @@ define('app/game', [
     constructor(config) {
       super(config);
       this.image = config.image;
+    }
+  }
+
+  class Spike extends GameObject {
+    constructor(config) {
+      super(config)
+      this.image = images.pipe;
+      this.direction = false;
+      this.distance = 100;
+      this.speed = 0.3;
+      this.spritesheet = images.lava;
+    }
+    tick() {
+      this.spritesheet.tick(1000/60);
+      if (!this.direction && this.distance > 100) {
+        this.direction = true;
+      } else if (this.direction && this.distance < 0) {
+        this.direction = false;
+      }
+      var modifier = (this.direction) ? (this.speed*-1) : this.speed;
+      this.distance += modifier;
+      var nextPosition = {
+        x: this.pos.x + modifier,
+        y: this.pos.y
+      }
+      this.pos = nextPosition;
+    }
+    draw(renderingContext) {
+      renderingContext.save();
+      renderingContext.translate(this.pos.x, this.pos.y)
+      if (this.direction) {
+        renderingContext.scale(-1, 1)
+        renderingContext.translate(-TILE_SIZE, 0)
+      }
+      this.spritesheet.draw(renderingContext);
+      renderingContext.restore();
     }
   }
 
@@ -409,6 +442,32 @@ define('app/game', [
       grandpa.done = true;
       victoryTile.done = true;
     }
+
+    if (isOfTypes(gameObject, other, Murrio, Spike)) {
+      var murrio = getOfType(gameObject, other, Murrio);
+      murrio.destroy();
+      gameObjects.push(new GameRestarter());
+      gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
+      playSound('gameMusic', true)
+      playSound('gameOverMusic')
+
+      _.each(new Array(20), function() {
+        var particleSettings = {
+          pos: {
+            x: murrio.pos.x + (Math.random() * TILE_SIZE),
+            y: murrio.pos.y + TILE_SIZE - (Math.random() * 2),
+          },
+          velocity: {
+            x: (Math.random() - 0.5) * 2,
+            y: -(Math.random() - 0.5) * 2,
+          },
+          image: images.lavaparticle,
+          lifetime: 60
+        }
+        var particle = new Particle(particleSettings);
+        gameObjects.push(particle);
+      })
+    }
   }
 
   function handleMove(gameObject, newPos, callbackX, callbackY) {
@@ -474,7 +533,7 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               },
-              image: images.lava,
+              image: images.lavaparticle,
               particles: true
             })
             gameObjects.push(tile)
@@ -557,6 +616,15 @@ define('app/game', [
               particles: false
             })
             gameObjects.push(invisible)
+          break;
+          case 'D':
+            var spike = new Spike({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              }
+            })
+            gameObjects.push(spike)
           break;
         }
       })
