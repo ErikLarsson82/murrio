@@ -38,7 +38,7 @@ define('app/game', [
   let murrio;
   let grandpa;
   let victoryTile;
-  let pressanykey;
+  let currentMapIdx = 0;
 
   function debugWriteButtons(pad) {
         if (!DEBUG_WRITE_BUTTONS) return;
@@ -256,22 +256,42 @@ define('app/game', [
   class GameRestarter {
     constructor() {
       this.amountUntilKeyPressAvailable = TIME_UNTIL_RESTART;
+      this.spritesheet = images.press_any_key;
       this.pos = {
         x: 999,
         y: 999
       }
     }
     tick() {
+      this.spritesheet.tick(1000/60);
       this.amountUntilKeyPressAvailable--;
 
       if (this.amountUntilKeyPressAvailable > 0) return;
 
       const pad = userInput.getInput(0)
       if (pad.buttons[0].pressed || pad.buttons[14].pressed || pad.buttons[15].pressed) {
+        if (this.gameIsReallyOver()) return;
+        if (this.done) {
+          currentMapIdx++;
+        }
         init();
       }
     }
-    draw() {}
+    gameIsReallyOver() {
+      return (this.done && map.getMap().length - 1 <= currentMapIdx);
+    }
+    draw(renderingContext) {
+      if (this.gameIsReallyOver()) {
+        renderingContext.drawImage(images.youdidit, canvasWidth/2 - (images.youdidit.width/2), 10)
+        return;
+      }
+
+      if (this.amountUntilKeyPressAvailable > 0) return;
+      renderingContext.save()
+      renderingContext.translate(canvasWidth/2-(320/2), canvasHeight/2-(64/2));
+      this.spritesheet.draw(renderingContext);
+      renderingContext.restore();
+    }
   }
 
   class ScreenScroller {
@@ -315,25 +335,6 @@ define('app/game', [
     }
   }
 
-  class PressAnyKey {
-    constructor() {
-      this.spritesheet = images.press_any_key;
-      this.wait = TIME_UNTIL_RESTART;
-    }
-    tick() {
-      this.spritesheet.tick(1000/60);
-      this.wait--;
-    }
-    draw(renderingContext) {
-      if (this.wait > 0) return;
-      renderingContext.save()
-      renderingContext.translate(canvasWidth/2-(320/2), canvasHeight/2-(64/2));
-      this.spritesheet.draw(renderingContext);
-      renderingContext.restore();
-    }
-  }
-
-
   function isOfTypes(gameObject, other, type1, type2) {
     return (gameObject instanceof type1 && other instanceof type2) ||
         (gameObject instanceof type2 && other instanceof type1)
@@ -373,7 +374,6 @@ define('app/game', [
       murrio.destroy();
       gameObjects.push(new GameRestarter());
       gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
-      pressanykey = new PressAnyKey();
       playSound('gameMusic', true)
       playSound('gameOverMusic')
 
@@ -397,6 +397,9 @@ define('app/game', [
     if (isOfTypes(gameObject, other, Murrio, VictoryTile)) {
       var murrio = getOfType(gameObject, other, Murrio);
       murrio.destroy();
+      var gr = new GameRestarter()
+      gr.done = true;
+      gameObjects.push(gr);
       gameObjects.push(new MurrioWin({ pos: murrio.pos }));
       playSound('gameMusic', true)
       playSound('victoryMusic')
@@ -553,7 +556,6 @@ define('app/game', [
   }
 
   function init(_playSound) {
-    pressanykey = null
     grandpa = null
     murrio = null
     victoryTile = null
@@ -566,7 +568,7 @@ define('app/game', [
 
     gameObjects = []
 
-    loadMap(map.getMap(0));
+    loadMap(map.getMap()[currentMapIdx]);
 
     playSound('gameMusic', false, true)
     playSound('victoryMusic', true, true)
@@ -578,6 +580,10 @@ define('app/game', [
   window.addEventListener("keydown", function(e) {
     if (e.keyCode === 83) { // s
       DEBUG_START_OFFSET = DEBUG_START_OFFSET + 1000;
+      init();
+    }
+    if (e.keyCode === 78) { // n
+      currentMapIdx++;
       init();
     }
   })
@@ -594,8 +600,6 @@ define('app/game', [
       gameObjects = gameObjects.filter(function (gameObject) {
         return !gameObject.markedForRemoval
       });
-
-      pressanykey && pressanykey.tick();
     },
     draw: function (renderingContext) {
       renderingContext.drawImage(images.sky,0,0)
@@ -609,8 +613,6 @@ define('app/game', [
         if (!(gameObject instanceof Decor)) gameObject.draw(renderingContext)
       })
       renderingContext.restore();
-
-      pressanykey && pressanykey.draw(renderingContext);
     },
     destroy: function() {
       playSound('victoryMusic', true)

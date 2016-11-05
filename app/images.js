@@ -76,6 +76,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var grandpa_happy = new Image();
   grandpa_happy.src = "./assets/images/grandpa_happy.png";
 
+  var youdidit = new Image();
+  youdidit.src = "./assets/images/youdidit.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -95,6 +98,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     bush1: bush1,
     bush2: bush2,
     grandpa: grandpa,
-    grandpa_happy: grandpa_happy
+    grandpa_happy: grandpa_happy,
+    youdidit: youdidit,
   }
 })
