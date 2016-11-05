@@ -70,6 +70,12 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var bush2 = new Image();
   bush2.src = "./assets/images/bush2.png";
 
+  var grandpa = new Image();
+  grandpa.src = "./assets/images/grandpa_sad.png";
+
+  var grandpa_happy = new Image();
+  grandpa_happy.src = "./assets/images/grandpa_happy.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -88,5 +94,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     cloud2: cloud2,
     bush1: bush1,
     bush2: bush2,
+    grandpa: grandpa,
+    grandpa_happy: grandpa_happy
   }
 })

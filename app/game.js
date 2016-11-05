@@ -36,6 +36,8 @@ define('app/game', [
   let gameObjects;
   let playSound;
   let murrio;
+  let grandpa;
+  let victoryTile;
   let pressanykey;
 
   function debugWriteButtons(pad) {
@@ -187,6 +189,21 @@ define('app/game', [
     }
   }
 
+  class Grandpa extends GameObject {
+    constructor(config) {
+      super(config);
+      this.done = false;
+    }
+    draw(renderingContext) {
+      if (this.done) {
+        renderingContext.drawImage(images.grandpa_happy, this.pos.x, this.pos.y)
+        renderingContext.drawImage(images.pratbubblathanks, 100, 100);
+      } else {
+        renderingContext.drawImage(images.grandpa, this.pos.x, this.pos.y)
+      }
+    }
+  }
+
   class Tile extends GameObject {
     constructor(config) {
       super(config);
@@ -206,6 +223,26 @@ define('app/game', [
     constructor(config) {
       super(config)
       this.image = images.pipe
+    }
+    tick() {
+      if (!this.done) {
+        if (Math.random() > 0.6) {
+          var particleSettings = {
+            pos: {
+              x: victoryTile.pos.x + (Math.random() * TILE_SIZE * 0.8),
+              y: victoryTile.pos.y,
+            },
+            velocity: {
+              x: (Math.random() - 0.5) * 1.2,
+              y: -(Math.random()) * 5,
+            },
+            image: images.lavaparticle,
+            lifetime: 60
+          }
+          var particle = new Particle(particleSettings);
+          gameObjects.push(particle);
+        }
+      }
     }
   }
 
@@ -316,7 +353,9 @@ define('app/game', [
         const condition3 = who.pos.y + TILE_SIZE > item.pos.y;
         const condition4 = who.pos.y < item.pos.y + TILE_SIZE;
         const condition5 = !item.markedForRemoval
-        return (condition1 && condition2 && condition3 && condition4 && condition5);
+        const condition6 = !(item instanceof Particle)
+        const condition7 = !(item instanceof Grandpa)
+        return (condition1 && condition2 && condition3 && condition4 && condition5 && condition6 && condition7);
       });
     }
 
@@ -353,6 +392,8 @@ define('app/game', [
       gameObjects.push(new MurrioWin({ pos: murrio.pos }));
       playSound('gameMusic', true)
       playSound('victoryMusic')
+      grandpa.done = true;
+      victoryTile.done = true;
     }
   }
 
@@ -419,13 +460,13 @@ define('app/game', [
             gameObjects.push(tile)
           break;
           case 5:
-            var tile = new VictoryTile({
+            victoryTile = new VictoryTile({
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               }
             })
-            gameObjects.push(tile)
+            gameObjects.push(victoryTile)
           break;
           case 6:
             var tile = new Tile({
@@ -436,6 +477,16 @@ define('app/game', [
               image: images.tile3
             })
             gameObjects.push(tile)
+          break;
+          case 7:
+            grandpa = new Grandpa({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.grandpa
+            })
+            gameObjects.push(grandpa)
           break;
         }
       })
@@ -455,6 +506,10 @@ define('app/game', [
 
   function init(_playSound) {
     pressanykey = null
+    grandpa = null
+    murrio = null
+    victoryTile = null
+
     canvasWidth = 1024
     canvasHeight = 768
 
