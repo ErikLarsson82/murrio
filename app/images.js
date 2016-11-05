@@ -89,6 +89,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var youdidit = new Image();
   youdidit.src = "./assets/images/youdidit.png";
 
+  var egg = new Image();
+  egg.src = "./assets/images/egg.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -111,5 +114,6 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     grandpa_happy: grandpa_happy,
     youdidit: youdidit,
     lava_blueprint: lava_blueprint,
+    egg: egg,
   }
 })

@@ -633,13 +633,24 @@ define('app/game', [
           break;
           case 'D':
             var spike = new Spike({
+              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               },
-              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
             })
             gameObjects.push(spike)
+          break;
+
+          case 'E':
+            var egg = new Decor({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.egg
+            })
+            gameObjects.push(egg)
           break;
         }
       })
