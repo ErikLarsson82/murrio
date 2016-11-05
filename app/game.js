@@ -205,7 +205,7 @@ define('app/game', [
   class VictoryTile extends GameObject {
     constructor(config) {
       super(config)
-      this.color = "blue"
+      this.image = images.pipe
     }
   }
 

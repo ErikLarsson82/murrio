@@ -40,6 +40,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var lava = new Image();
   lava.src = "./assets/images/lava.png";
 
+  var pipe = new Image();
+  pipe.src = "./assets/images/pipe.png";
+
   var won = new Image();
   won.src = "./assets/images/won.png";
 
@@ -48,6 +51,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
 
   var sky = new Image();
   sky.src = "./assets/images/sky.png";
+
+  var pratbubblathanks = new Image();
+  pratbubblathanks.src = "./assets/images/pratbubblathanks.png";
 
   var lavaparticle = new Image();
   lavaparticle.src = "./assets/images/lavaparticle.png";
@@ -59,10 +65,12 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     tile: tile,
     tile3: tile3,
     lava: lava,
+    pipe: pipe,
     won: won,
     dead: dead,
     sky: sky,
+    pratbubblathanks: pratbubblathanks,
     lavaparticle: lavaparticle,
-    press_any_key: press_any_key
+    press_any_key: press_any_key,
   }
 })
