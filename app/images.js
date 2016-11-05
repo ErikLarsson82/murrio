@@ -36,6 +36,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var sky = new Image();
   sky.src = "./assets/images/sky.png";
 
+  var lavaparticle = new Image();
+  lavaparticle.src = "./assets/images/lavaparticle.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -45,6 +48,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     lava: lava,
     won: won,
     dead: dead,
-    sky: sky
+    sky: sky,
+    lavaparticle: lavaparticle
   }
 })

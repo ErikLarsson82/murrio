@@ -45,6 +45,7 @@ define('app/game', [
 
   class GameObject {
     constructor(config) {
+      this.image = config.image;
       this.markedForRemoval = false;
       this.color = config.color || "gray"
       this.pos = config.pos;
@@ -242,6 +243,31 @@ define('app/game', [
     }
   }
 
+  class Particle extends GameObject {
+    constructor(config) {
+      super(config);
+      this.image = config.image;
+      this.lifetimeMax = config.lifetime;
+      this.lifetime = config.lifetime;
+    }
+    tick() {
+      const nextPosition = {
+        x: this.pos.x + this.velocity.x,
+        y: this.pos.y + this.velocity.y
+      }
+      this.pos = nextPosition;
+
+      this.lifetime--;
+      if (this.lifetime <= 0) this.markedForRemoval = true;
+    }
+    draw(renderingContext) {
+      renderingContext.globalAlpha = (this.lifetime / this.lifetimeMax);
+      super.draw(renderingContext);
+      renderingContext.globalAlpha = 1;
+    }
+  }
+
+
   function isOfTypes(gameObject, other, type1, type2) {
     return (gameObject instanceof type1 && other instanceof type2) ||
         (gameObject instanceof type2 && other instanceof type1)
@@ -280,6 +306,23 @@ define('app/game', [
       gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
       playSound('gameMusic', true)
       playSound('gameOverMusic')
+
+      _.each(new Array(20), function() {
+        var particleSettings = {
+          pos: {
+            x: murrio.pos.x + (Math.random() * TILE_SIZE),
+            y: murrio.pos.y + TILE_SIZE - (Math.random() * 2),
+          },
+          velocity: {
+            x: (Math.random() - 0.5),
+            y: (Math.random() - 0.5),
+          },
+          image: images.lavaparticle,
+          lifetime: 40
+        }
+        var particle = new Particle(particleSettings);
+        gameObjects.push(particle);
+      })
     }
     if (isOfTypes(gameObject, other, Murrio, VictoryTile)) {
       var murrio = getOfType(gameObject, other, Murrio);
@@ -397,7 +440,7 @@ define('app/game', [
 
     gameObjects = []
 
-    loadMap(map.getMap(99));
+    loadMap(map.getMap(0));
 
     playSound('gameMusic', false, true)
     playSound('victoryMusic', true, true)
