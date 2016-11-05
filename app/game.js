@@ -223,7 +223,7 @@ define('app/game', [
       this.direction = false;
       this.distance = 100;
       this.speed = 0.3;
-      this.spritesheet = images.lava;
+      this.spritesheet = config.sprite;
     }
     tick() {
       this.spritesheet.tick(1000/60);
@@ -257,6 +257,20 @@ define('app/game', [
       super(config)
       this.particles = config.particles;
       this.color = "red";
+      this.sprite = config.sprite;
+    }
+    tick() {
+      if (this.sprite) {
+        this.sprite.tick(1000/60)
+      }
+    }
+    draw(renderingContext) {
+      if (this.sprite) {
+        renderingContext.save();
+        renderingContext.translate(this.pos.x, this.pos.y)
+        this.sprite.draw(renderingContext);
+        renderingContext.restore();
+        }
     }
   }
 
@@ -533,7 +547,7 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               },
-              image: images.lavaparticle,
+              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
               particles: true
             })
             gameObjects.push(tile)
@@ -622,7 +636,8 @@ define('app/game', [
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
-              }
+              },
+              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
             })
             gameObjects.push(spike)
           break;

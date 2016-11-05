@@ -37,10 +37,10 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var tile3 = new Image();
   tile3.src = "./assets/images/tile3.png";
 
-  var lava_sprite = new Image();
-  lava_sprite.src = "./assets/images/lava.png";
+  var lava = new Image();
+  lava.src = "./assets/images/lava.png";
 
-  var lava = SpriteSheet.new(lava_sprite, {
+  var lava_blueprint = {
     frames: [200, 200],
     x: 0,
     y: 0,
@@ -48,7 +48,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     height: 48,
     restart: true,
     autoPlay: true,
-  });
+  }
 
   var pipe = new Image();
   pipe.src = "./assets/images/pipe.png";
@@ -110,5 +110,6 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     grandpa: grandpa,
     grandpa_happy: grandpa_happy,
     youdidit: youdidit,
+    lava_blueprint: lava_blueprint,
   }
 })
