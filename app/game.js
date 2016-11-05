@@ -363,7 +363,7 @@ define('app/game', [
 
     gameObjects = []
 
-    loadMap(map);
+    loadMap(map.getMap(0));
 
     scroller = new ScreenScroller();
   }
