@@ -60,6 +60,7 @@ define('app/game', [
       super(config)
       this.jumpAvailable = 2;
       this.jumpButtonReleased = true;
+      this.touchingGround = false;
     }
     tick() {
       const pad = userInput.getInput(0)
@@ -81,8 +82,9 @@ define('app/game', [
         this.jumpButtonReleased = true;
       }
 
+      var groundFriction = (this.touchingGround) ? 0.98 : 1;
       this.velocity = {
-        x: this.velocity.x + acceleration.x,
+        x: (this.velocity.x + acceleration.x) * groundFriction,
         y: this.velocity.y + acceleration.y + GRAVITY
       }
       const nextPosition = {
@@ -96,7 +98,9 @@ define('app/game', [
       var callbackY = function() {
         this.velocity.y = 0;
         this.jumpAvailable = 2;
+        this.touchingGround = true;
       }
+      this.touchingGround = false;
       handleMove(this, nextPosition, callbackX.bind(this), callbackY.bind(this));
 
       super.tick();
@@ -118,9 +122,21 @@ define('app/game', [
   class ScreenScroller {
     constructor() {
       this.screenOffset = 0;
+      this.momentum = 0;
     }
     tick() {
-      this.screenOffset += 1;
+      var treshold_one = Math.round(canvasWidth * 0.4);
+      var treshold_two = Math.round(canvasWidth * 0.6);
+      var treshold_three = Math.round(canvasWidth * 0.8);
+      if (murrio.pos.x - this.screenOffset > treshold_one) this.screenOffset += 1;
+      if (murrio.pos.x - this.screenOffset > treshold_two) this.screenOffset += 2;
+      if (murrio.pos.x - this.screenOffset > treshold_three) {
+        this.momentum = 40;
+      }
+      if (this.momentum > 0) {
+        this.screenOffset += this.momentum;
+        this.momentum -= 1;
+      }
     }
     getScreenOffset() {
       return this.screenOffset;
