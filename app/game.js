@@ -211,6 +211,13 @@ define('app/game', [
     }
   }
 
+  class Decor extends GameObject {
+    constructor(config) {
+      super(config);
+      this.image = config.image;
+    }
+  }
+
   class DeathTile extends GameObject {
     constructor(config) {
       super(config)
@@ -355,7 +362,8 @@ define('app/game', [
         const condition5 = !item.markedForRemoval
         const condition6 = !(item instanceof Particle)
         const condition7 = !(item instanceof Grandpa)
-        return (condition1 && condition2 && condition3 && condition4 && condition5 && condition6 && condition7);
+        const condition8 = !(item instanceof Decor)
+        return (condition1 && condition2 && condition3 && condition4 && condition5 && condition6 && condition7 && condition8);
       });
     }
 
@@ -488,6 +496,46 @@ define('app/game', [
             })
             gameObjects.push(grandpa)
           break;
+          case 8:
+            var cloud1 = new Decor({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.cloud1
+            })
+            gameObjects.push(cloud1)
+          break;
+          case 9:
+            var cloud2 = new Decor({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.cloud2
+            })
+            gameObjects.push(cloud2)
+          break;
+          case 'A':
+            var bush1 = new Decor({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.bush1
+            })
+            gameObjects.push(bush1)
+          break;
+          case 'B':
+            var bush2 = new Decor({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.bush2
+            })
+            gameObjects.push(bush2)
+          break;
         }
       })
     })
@@ -555,7 +603,10 @@ define('app/game', [
       renderingContext.save();
       renderingContext.translate(-scroller.getScreenOffset(), 0);
       _.each(gameObjects, function (gameObject) {
-        gameObject.draw(renderingContext)
+        if (gameObject instanceof Decor) gameObject.draw(renderingContext)
+      })
+      _.each(gameObjects, function (gameObject) {
+        if (!(gameObject instanceof Decor)) gameObject.draw(renderingContext)
       })
       renderingContext.restore();
 
