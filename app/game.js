@@ -188,7 +188,7 @@ define('app/game', [
   class Tile extends GameObject {
     constructor(config) {
       super(config);
-      this.image = images.tile;
+      this.image = config.image;
     }
   }
 
@@ -396,7 +396,8 @@ define('app/game', [
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
-              }
+              },
+              image: images.tile
             })
             gameObjects.push(tile)
           break;
@@ -415,6 +416,16 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               }
+            })
+            gameObjects.push(tile)
+          break;
+          case 6:
+            var tile = new Tile({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              image: images.tile3
             })
             gameObjects.push(tile)
           break;
