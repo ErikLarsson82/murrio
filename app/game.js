@@ -128,7 +128,7 @@ define('app/game', [
     }
     jump() {
       if (!this.touchingGround || !this.jumpButtonReleased) return;
-      var jumpSpeed = -9.4 - Math.abs(this.velocity.x / 2);
+      var jumpSpeed = -9.45 - Math.abs(this.velocity.x / 2);
       this.velocity.y = Math.max(-11, jumpSpeed);
       this.touchingGround = false;
       this.jumpButtonReleased = false;
