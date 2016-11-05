@@ -24,7 +24,7 @@ define('app/game', [
   let canvasWidth
   let canvasHeight
 
-  const DEBUG_WRITE_BUTTONS = !false;
+  const DEBUG_WRITE_BUTTONS = false;
   const DEBUG_DISABLE_GRAPHICS = false;
   const DEBUG_DRAW_BOXES = false;
   let DEBUG_START_OFFSET = 0;
@@ -59,10 +59,11 @@ define('app/game', [
 
     }
     draw(renderingContext) {
-      if (!this.image || DEBUG_DRAW_BOXES) {
+      if (DEBUG_DRAW_BOXES) {
         renderingContext.fillStyle = this.color;
         renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
       } else {
+        if (!this.image) return;
         renderingContext.drawImage(this.image, this.pos.x, this.pos.y)
       }
     }
@@ -221,8 +222,8 @@ define('app/game', [
   class DeathTile extends GameObject {
     constructor(config) {
       super(config)
+      this.particles = config.particles;
       this.color = "red";
-      this.image = images.lava;
     }
   }
 
@@ -369,6 +370,7 @@ define('app/game', [
 
   function resolveCollision(gameObject, other) {
     if (isOfTypes(gameObject, other, Murrio, DeathTile)) {
+      var death = getOfType(gameObject, other, DeathTile);
       var murrio = getOfType(gameObject, other, Murrio);
       murrio.destroy();
       gameObjects.push(new GameRestarter());
@@ -376,22 +378,24 @@ define('app/game', [
       playSound('gameMusic', true)
       playSound('gameOverMusic')
 
-      _.each(new Array(20), function() {
-        var particleSettings = {
-          pos: {
-            x: murrio.pos.x + (Math.random() * TILE_SIZE),
-            y: murrio.pos.y + TILE_SIZE - (Math.random() * 2),
-          },
-          velocity: {
-            x: (Math.random() - 0.5) * 1.2,
-            y: -(Math.random() - 0.3) * 3,
-          },
-          image: images.lavaparticle,
-          lifetime: 60
-        }
-        var particle = new Particle(particleSettings);
-        gameObjects.push(particle);
-      })
+      if (death.particle) {
+        _.each(new Array(20), function() {
+          var particleSettings = {
+            pos: {
+              x: murrio.pos.x + (Math.random() * TILE_SIZE),
+              y: murrio.pos.y + TILE_SIZE - (Math.random() * 2),
+            },
+            velocity: {
+              x: (Math.random() - 0.5) * 1.2,
+              y: -(Math.random() - 0.3) * 3,
+            },
+            image: images.lavaparticle,
+            lifetime: 60
+          }
+          var particle = new Particle(particleSettings);
+          gameObjects.push(particle);
+        })
+      }
     }
     if (isOfTypes(gameObject, other, Murrio, VictoryTile)) {
       var murrio = getOfType(gameObject, other, Murrio);
@@ -469,7 +473,9 @@ define('app/game', [
               pos: {
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
-              }
+              },
+              image: images.lava,
+              particles: true
             })
             gameObjects.push(tile)
           break;
@@ -541,6 +547,16 @@ define('app/game', [
               image: images.bush2
             })
             gameObjects.push(bush2)
+          break;
+          case 'C':
+            var invisible = new DeathTile({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              particles: false
+            })
+            gameObjects.push(invisible)
           break;
         }
       })
