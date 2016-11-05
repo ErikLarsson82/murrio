@@ -221,13 +221,14 @@ define('app/game', [
       super(config)
       this.image = images.pipe;
       this.direction = false;
-      this.distance = 100;
+      this.totalWalkDistance = config.totalWalkDistance;
+      this.distance = this.totalWalkDistance;
       this.speed = 0.3;
       this.spritesheet = config.sprite;
     }
     tick() {
       this.spritesheet.tick(1000/60);
-      if (!this.direction && this.distance > 100) {
+      if (!this.direction && this.distance > this.totalWalkDistance) {
         this.direction = true;
       } else if (this.direction && this.distance < 0) {
         this.direction = false;
@@ -638,11 +639,33 @@ define('app/game', [
                 x: colIdx * TILE_SIZE,
                 y: rowIdx * TILE_SIZE
               },
+              totalWalkDistance: 48
             })
             gameObjects.push(spike)
           break;
-
           case 'E':
+            var spike = new Spike({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
+              totalWalkDistance: 48 * 3
+            })
+            gameObjects.push(spike)
+          break;
+          case 'F':
+            var spike = new Spike({
+              pos: {
+                x: colIdx * TILE_SIZE,
+                y: rowIdx * TILE_SIZE
+              },
+              sprite: SpriteSheet.new(images.lava, images.lava_blueprint),
+              totalWalkDistance: 48 * 7
+            })
+            gameObjects.push(spike)
+          break;
+          case 'G':
             var egg = new Decor({
               pos: {
                 x: colIdx * TILE_SIZE,
