@@ -297,7 +297,6 @@ define('app/game', [
   class ScreenScroller {
     constructor() {
       this.screenOffset = DEBUG_START_OFFSET || 0;
-      this.momentum = 0;
     }
     tick() {
       if (murrio.pos.x > canvasWidth / 2 + this.screenOffset) {
@@ -447,6 +446,10 @@ define('app/game', [
               pos: {
                 x: colIdx * TILE_SIZE + DEBUG_START_OFFSET,
                 y: verticalOffset
+              },
+              velocity: {
+                x: 0.00001,
+                y: 0
               }
             })
             gameObjects.push(murrio)
@@ -579,11 +582,15 @@ define('app/game', [
 
   window.addEventListener("keydown", function(e) {
     if (e.keyCode === 83) { // s
-      DEBUG_START_OFFSET = DEBUG_START_OFFSET + 1000;
-      init();
+      scroller.screenOffset = scroller.screenOffset + 1000;
+      murrio.pos.x = murrio.pos.x + 1000;
     }
     if (e.keyCode === 78) { // n
       currentMapIdx++;
+      init();
+    }
+    if (e.keyCode === 77) { // m
+      currentMapIdx = 0;
       init();
     }
   })
@@ -610,9 +617,14 @@ define('app/game', [
         if (gameObject instanceof Decor) gameObject.draw(renderingContext)
       })
       _.each(gameObjects, function (gameObject) {
-        if (!(gameObject instanceof Decor)) gameObject.draw(renderingContext)
+        if (!(gameObject instanceof Decor || gameObject instanceof GameRestarter))
+          gameObject.draw(renderingContext)
       })
       renderingContext.restore();
+
+      _.each(gameObjects, function (gameObject) {
+        if (gameObject instanceof GameRestarter) gameObject.draw(renderingContext)
+      })
     },
     destroy: function() {
       playSound('victoryMusic', true)
