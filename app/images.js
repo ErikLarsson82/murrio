@@ -21,6 +21,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var tile = new Image();
   tile.src = "./assets/images/tile.png";
 
+  var tile3 = new Image();
+  tile3.src = "./assets/images/tile3.png";
+
   var lava = new Image();
   lava.src = "./assets/images/lava.png";
 
@@ -38,6 +41,7 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     walk_animation: walk_animation,
     jump: jump,
     tile: tile,
+    tile3: tile3,
     lava: lava,
     won: won,
     dead: dead,
