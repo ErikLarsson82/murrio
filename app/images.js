@@ -58,6 +58,18 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var lavaparticle = new Image();
   lavaparticle.src = "./assets/images/lavaparticle.png";
 
+  var cloud1 = new Image();
+  cloud1.src = "./assets/images/cloud1.png";
+
+  var cloud2 = new Image();
+  cloud2.src = "./assets/images/cloud2.png";
+
+  var bush1 = new Image();
+  bush1.src = "./assets/images/bush1.png";
+
+  var bush2 = new Image();
+  bush2.src = "./assets/images/bush2.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -72,5 +84,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     pratbubblathanks: pratbubblathanks,
     lavaparticle: lavaparticle,
     press_any_key: press_any_key,
+    cloud1: cloud1,
+    cloud2: cloud2,
+    bush1: bush1,
+    bush2: bush2,
   }
 })
