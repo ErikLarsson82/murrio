@@ -281,12 +281,12 @@ define('app/game', [
       return (this.done && map.getMap().length - 1 <= currentMapIdx);
     }
     draw(renderingContext) {
+      if (this.amountUntilKeyPressAvailable > 0) return;
+
       if (this.gameIsReallyOver()) {
         renderingContext.drawImage(images.youdidit, canvasWidth/2 - (images.youdidit.width/2), 10)
         return;
       }
-
-      if (this.amountUntilKeyPressAvailable > 0) return;
       renderingContext.save()
       renderingContext.translate(canvasWidth/2-(320/2), canvasHeight/2-(64/2));
       this.spritesheet.draw(renderingContext);
