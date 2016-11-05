@@ -15,6 +15,19 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     autoPlay: true,
   });
 
+  var press_any_key_sprite = new Image();
+  press_any_key_sprite.src = "./assets/images/pressanykey.png";
+
+  var press_any_key = SpriteSheet.new(press_any_key_sprite, {
+    frames: [200, 200],
+    x: 0,
+    y: 0,
+    width: 320,
+    height: 64,
+    restart: true,
+    autoPlay: true,
+  });
+
   var jump = new Image();
   jump.src = "./assets/images/jump.png";
 
@@ -39,9 +52,6 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var lavaparticle = new Image();
   lavaparticle.src = "./assets/images/lavaparticle.png";
 
-  var pressanykey = new Image();
-  pressanykey.src = "./assets/images/pressanykey.png";
-
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -53,6 +63,6 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     dead: dead,
     sky: sky,
     lavaparticle: lavaparticle,
-    pressanykey: pressanykey
+    press_any_key: press_any_key
   }
 })

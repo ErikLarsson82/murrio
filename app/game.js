@@ -31,10 +31,12 @@ define('app/game', [
 
   const TILE_SIZE = 48;
   const GRAVITY = 0.3;
+  const TIME_UNTIL_RESTART = 200;
 
   let gameObjects;
   let playSound;
   let murrio;
+  let pressanykey;
 
   function debugWriteButtons(pad) {
         if (!DEBUG_WRITE_BUTTONS) return;
@@ -209,7 +211,7 @@ define('app/game', [
 
   class GameRestarter {
     constructor() {
-      this.amountUntilKeyPressAvailable = 200;
+      this.amountUntilKeyPressAvailable = TIME_UNTIL_RESTART;
       this.pos = {
         x: 999,
         y: 999
@@ -221,7 +223,7 @@ define('app/game', [
       if (this.amountUntilKeyPressAvailable > 0) return;
 
       const pad = userInput.getInput(0)
-      if (pad.buttons[0].pressed) {
+      if (pad.buttons[0].pressed || pad.buttons[14].pressed || pad.buttons[15].pressed) {
         init();
       }
     }
@@ -269,15 +271,21 @@ define('app/game', [
     }
   }
 
-  class PressAnyKey extends GameObject {
-    constructor(config) {
-      super(config);
+  class PressAnyKey {
+    constructor() {
+      this.spritesheet = images.press_any_key;
+      this.wait = TIME_UNTIL_RESTART;
     }
     tick() {
-
+      this.spritesheet.tick(1000/60);
+      this.wait--;
     }
     draw(renderingContext) {
-
+      if (this.wait > 0) return;
+      renderingContext.save()
+      renderingContext.translate(canvasWidth/2-(320/2), canvasHeight/2-(64/2));
+      this.spritesheet.draw(renderingContext);
+      renderingContext.restore();
     }
   }
 
@@ -318,6 +326,7 @@ define('app/game', [
       murrio.destroy();
       gameObjects.push(new GameRestarter());
       gameObjects.push(new MurrioDeathAnimation({ pos: murrio.pos }));
+      pressanykey = new PressAnyKey();
       playSound('gameMusic', true)
       playSound('gameOverMusic')
 
@@ -341,7 +350,6 @@ define('app/game', [
     if (isOfTypes(gameObject, other, Murrio, VictoryTile)) {
       var murrio = getOfType(gameObject, other, Murrio);
       murrio.destroy();
-      gameObjects.push(new GameRestarter());
       gameObjects.push(new MurrioWin({ pos: murrio.pos }));
       playSound('gameMusic', true)
       playSound('victoryMusic')
@@ -446,6 +454,7 @@ define('app/game', [
   }
 
   function init(_playSound) {
+    pressanykey = null
     canvasWidth = 1024
     canvasHeight = 768
 
@@ -482,6 +491,8 @@ define('app/game', [
       gameObjects = gameObjects.filter(function (gameObject) {
         return !gameObject.markedForRemoval
       });
+
+      pressanykey && pressanykey.tick();
     },
     draw: function (renderingContext) {
       renderingContext.drawImage(images.sky,0,0)
@@ -493,10 +504,7 @@ define('app/game', [
       })
       renderingContext.restore();
 
-      if (!playerAlive()) {
-        renderingContext.fillStyle = "red";
-        renderingContext.fillRect(100, 100, 10, 10)
-      }
+      pressanykey && pressanykey.draw(renderingContext);
     },
     destroy: function() {
       playSound('victoryMusic', true)
