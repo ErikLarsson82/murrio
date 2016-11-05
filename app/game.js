@@ -182,12 +182,17 @@ define('app/game', [
 
   class GameRestarter {
     constructor() {
+      this.amountUntilKeyPressAvailable = 200;
       this.pos = {
         x: 999,
         y: 999
       }
     }
     tick() {
+      this.amountUntilKeyPressAvailable--;
+
+      if (this.amountUntilKeyPressAvailable > 0) return;
+
       const pad = userInput.getInput(0)
       if (pad.buttons[0].pressed) {
         init();
@@ -251,9 +256,6 @@ define('app/game', [
     }
 
   function resolveCollision(gameObject, other) {
-    if (isOfTypes(gameObject, other, Murrio, Tile)) {
-      //console.log('kollide with tile');
-    }
     if (isOfTypes(gameObject, other, Murrio, DeathTile)) {
       var murrio = getOfType(gameObject, other, Murrio);
       murrio.destroy();
@@ -293,7 +295,6 @@ define('app/game', [
       } else {
         gameObject.pos.y = collisions[0].pos.y + TILE_SIZE;
       }
-      //gameObject.pos.y = collisions[0].pos.y - TILE_SIZE;
       callbackY(collisions);
     }
   }
