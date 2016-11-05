@@ -722,7 +722,7 @@ define('app/game', [
       currentMapIdx++;
       init();
     }
-    if (e.keyCode === 77) { // m
+    if (e.keyCode === 66) { // b
       currentMapIdx = 0;
       init();
     }
