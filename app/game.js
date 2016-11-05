@@ -26,6 +26,7 @@ define('app/game', [
 
   const DEBUG_WRITE_BUTTONS = !false;
   const DEBUG_DISABLE_GRAPHICS = false;
+  const DEBUG_DRAW_BOXES = true;
 
   const TILE_SIZE = 48;
   const GRAVITY = 0.3;
@@ -43,7 +44,7 @@ define('app/game', [
   class GameObject {
     constructor(config) {
       this.markedForRemoval = false;
-      this.color = config.color || "black"
+      this.color = config.color || "gray"
       this.pos = config.pos;
       this.velocity = config.velocity || {x: 0, y: 0}
     }
@@ -51,6 +52,7 @@ define('app/game', [
 
     }
     draw(renderingContext) {
+      if (!DEBUG_DRAW_BOXES) return;
       renderingContext.fillStyle = this.color;
       renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
     }
@@ -64,6 +66,8 @@ define('app/game', [
       super(config);
       this.jumpButtonReleased = true;
       this.touchingGround = false;
+      this.walk_animation = images.walk_animation;
+      this.direction = false; //True is left, false is right
     }
     tick() {
       const pad = userInput.getInput(0)
@@ -71,11 +75,12 @@ define('app/game', [
         x: 0,
         y: 0
       }
+      var speed = (this.touchingGround) ? 0.2 : 0.08;
       if (pad.buttons[14].pressed) { // left
-        acceleration.x -= 0.1;
+        acceleration.x -= speed;
       }
       if (pad.buttons[15].pressed) { // right
-        acceleration.x += 0.1;
+        acceleration.x += speed;
       }
 
       if (pad.buttons[0].pressed) { // up
@@ -105,18 +110,43 @@ define('app/game', [
       this.touchingGround = false;
       handleMove(this, nextPosition, callbackX.bind(this), callbackY.bind(this));
 
+      this.walk_animation.tick(Math.round(1000/60 * Math.abs(this.velocity.x)));
+
+      this.direction = (this.velocity.x >= 0);
       super.tick();
     }
     jump() {
       if (!this.touchingGround || !this.jumpButtonReleased) return;
-      this.velocity.y = -6;
+      this.velocity.y = -10;
       this.touchingGround = false;
       this.jumpButtonReleased = false;
     }
     draw(renderingContext) {
-      var color = (this.touchingGround) ? this.color : "purple"
-      renderingContext.fillStyle = color;
-      renderingContext.fillRect(this.pos.x, this.pos.y, TILE_SIZE, TILE_SIZE)
+      super.draw(renderingContext);
+
+      if (Math.abs(this.velocity.x) > 1 && this.touchingGround) {
+        renderingContext.save()
+        renderingContext.translate(this.pos.x, this.pos.y);
+        if (!this.direction) {
+          renderingContext.scale(-1, 1);
+          renderingContext.translate(-TILE_SIZE, 0);
+        }
+        this.walk_animation.draw(renderingContext);
+        renderingContext.restore();
+      }  else {
+        renderingContext.save();
+        renderingContext.translate(this.pos.x, this.pos.y);
+        if (!this.direction) {
+          renderingContext.scale(-1, 1);
+          renderingContext.translate(-TILE_SIZE, 0);
+        }
+        if (this.touchingGround) {
+          renderingContext.drawImage(images.idle, 0, 0)
+        } else {
+          renderingContext.drawImage(images.jump, 0, 0)
+        }
+        renderingContext.restore();
+      }
     }
   }
 
