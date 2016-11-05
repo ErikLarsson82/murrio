@@ -105,6 +105,9 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
   var egg = new Image();
   egg.src = "./assets/images/egg.png";
 
+  var particleSpike = new Image();
+  particleSpike.src = "./assets/images/particleSpike.png";
+
   return {
     idle: idle,
     walk_animation: walk_animation,
@@ -130,5 +133,6 @@ define('app/images', ['SpriteSheet'], function(SpriteSheet) {
     egg: egg,
     spike: spike,
     spike_blueprint: spike_blueprint,
+    particleSpike: particleSpike,
   }
 })

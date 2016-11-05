@@ -469,15 +469,15 @@ define('app/game', [
       _.each(new Array(20), function() {
         var particleSettings = {
           pos: {
-            x: murrio.pos.x + (Math.random() * TILE_SIZE),
-            y: murrio.pos.y + TILE_SIZE - (Math.random() * 2),
+            x: murrio.pos.x + TILE_SIZE / 2,
+            y: murrio.pos.y + TILE_SIZE / 2,
           },
           velocity: {
-            x: (Math.random() - 0.5) * 2,
-            y: -(Math.random() - 0.5) * 2,
+            x: (Math.random() - 0.5) * 5,
+            y: -(Math.random() - 0.5) * 5,
           },
-          image: images.lavaparticle,
-          lifetime: 60
+          image: images.particleSpike,
+          lifetime: 80
         }
         var particle = new Particle(particleSettings);
         gameObjects.push(particle);
@@ -704,7 +704,8 @@ define('app/game', [
 
     gameObjects = []
 
-    loadMap(map.getMap()[currentMapIdx]);
+    // loadMap(map.getMap()[currentMapIdx]);
+    loadMap(map.getMap()[1]);
 
     playSound('gameMusic', false, true)
     playSound('victoryMusic', true, true)
